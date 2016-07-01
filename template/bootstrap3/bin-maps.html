@@ -1,0 +1,22 @@
+<div class="bin-maps">
+    <bin-edit ng-if="$ctrl.status == 'visible'">
+        <bin-edit-actions>
+            <li>
+                <button type="button" class="bin-link" ng-click="$ctrl.toggle()">
+                    hide map
+                </button>
+            </li>
+        </bin-edit-actions>
+        <bin-edit-body>
+            <div i18n code="{{::$ctrl.addressI18nCode}}">
+                <bin-maps-map address="var" class="bin-maps-map"></bin-maps-map>
+            </div>
+        </bin-edit-body>
+    </bin-edit>
+
+    <div class="bin-maps-hidden" ng-if="$ctrl.status == 'hidden' && $ctrl.editing">
+        <button class="bin-btn bin-btn-primary bin-btn-floated" ng-click="$ctrl.toggle()">
+            show map
+        </button>
+    </div>
+</div>

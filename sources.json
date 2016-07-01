@@ -1,0 +1,7 @@
+{
+  "default": {
+    "bin.maps":"bower_components/binarta.maps.angular/src/maps.js",
+    "bin.maps.google":"bower_components/binarta.maps.angular/src/maps.google.js",
+    "bin.maps.templates":"bower_components/binarta.maps.angular/src/maps-tpls-bootstrap3.js"
+  }
+}

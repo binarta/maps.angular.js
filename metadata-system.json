@@ -1,0 +1,20 @@
+{
+  "msgs":{
+    "nl":{
+      "maps.hide.map": "Verberg kaart",
+      "maps.show.map": "Toon kaart"
+    },
+    "en":{
+      "maps.hide.map": "Hide map",
+      "maps.show.map": "Show map"
+    },
+    "fr":{
+      "maps.hide.map": "Hide map",
+      "maps.show.map": "Show map"
+    },
+    "de":{
+      "maps.hide.map": "Hide map",
+      "maps.show.map": "Show map"
+    }
+  }
+}
