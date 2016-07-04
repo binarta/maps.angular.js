@@ -1,28 +1,17 @@
 (function (angular) {
-    angular.module('bin.maps.google', ['angularx', 'config', 'viewport'])
-        .factory('binMapsProvider', ['$q', '$window', '$log', 'configReader', 'resourceLoader', 'viewport', BinMapsProvider]);
+    angular.module('bin.maps.google', ['angularx', 'viewport', 'application'])
+        .factory('binMapsProvider', ['$q', '$window', '$log', 'resourceLoader', 'viewport', 'applicationDataService', BinMapsProvider]);
 
-    function BinMapsProvider($q, $window, $log, configReader, resourceLoader, viewport) {
-        var address, previousAddress, element, locationDeferred, apiKey;
-        var defaultApiKey = 'AIzaSyCa02K7BDa306sAvOuYbAKygu0MZnq56rI';
+    function BinMapsProvider($q, $window, $log, resourceLoader, viewport, applicationData) {
+        var address, previousAddress, element, locationDeferred;
 
         return function (args) {
             address = args.address;
             element = args.element;
             
-            if (apiKey) initGoogle(apiKey);
-            else {
-                configReader({
-                    scope: 'public',
-                    key: 'maps.google.api.key'
-                }).then(function (result) {
-                    apiKey = result.data.value || defaultApiKey;
-                }, function () {
-                    apiKey = defaultApiKey;
-                }).finally(function () {
-                    initGoogle(apiKey);
-                });
-            }
+            applicationData.then(function (data) {
+                if (data.googleMaps) initGoogle(data.googleMaps.apiKey);
+            });
         };
         
         function initGoogle(key) {

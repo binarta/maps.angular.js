@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "binarta.angularx": "0.*.*",
+    "binarta.application.angular": "0.*.*",
     "binarta.edit.angular": "0.*.*",
     "binarta.config.angular": "0.*.*",
     "binarta.notifications.angular": "1.*.*",
