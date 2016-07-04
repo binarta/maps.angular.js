@@ -133,4 +133,17 @@ describe('bin.maps.google', function () {
             });
         });
     });
+
+    describe('when there is no api key', function () {
+        beforeEach(function () {
+            applicationData.then.and.callFake(function (listener) {
+                listener({googleMaps: {}});
+            });
+            provider({});
+        });
+
+        it('log a warning', function () {
+            expect($log.warn.logs[0]).toEqual(['Google API key is missing.']);
+        });
+    });
 });

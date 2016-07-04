@@ -10,7 +10,8 @@
             element = args.element;
             
             applicationData.then(function (data) {
-                if (data.googleMaps) initGoogle(data.googleMaps.apiKey);
+                if (data.googleMaps && data.googleMaps.apiKey) initGoogle(data.googleMaps.apiKey);
+                else $log.warn('Google API key is missing.');
             });
         };
         
