@@ -13,7 +13,8 @@
     "binarta.edit.angular": "0.*.*",
     "binarta.config.angular": "0.*.*",
     "binarta.notifications.angular": "1.*.*",
-    "binarta.viewport.angular": "0.*.*"
+    "binarta.viewport.angular": "0.*.*",
+    "binarta.style.guide": "0.*.*"
   },
   "devDependencies": {
     "angular-mocks": "1.*.*"

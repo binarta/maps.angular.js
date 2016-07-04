@@ -2,9 +2,8 @@
     <bin-edit ng-if="$ctrl.status == 'visible'">
         <bin-edit-actions>
             <li>
-                <button type="button" class="bin-link" ng-click="$ctrl.toggle()">
-                    hide map
-                </button>
+                <button type="button" class="bin-link" ng-click="$ctrl.toggle()"
+                        i18n code="maps.hide.map" read-only ng-bind="::var"></button>
             </li>
         </bin-edit-actions>
         <bin-edit-body>
@@ -15,8 +14,7 @@
     </bin-edit>
 
     <div class="bin-maps-hidden" ng-if="$ctrl.status == 'hidden' && $ctrl.editing">
-        <button class="bin-btn bin-btn-primary bin-btn-floated" ng-click="$ctrl.toggle()">
-            show map
-        </button>
+        <button class="bin-btn bin-btn-primary bin-btn-floated" ng-click="$ctrl.toggle()"
+                i18n code="maps.show.map" read-only ng-bind="::var"></button>
     </div>
 </div>
