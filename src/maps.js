@@ -7,9 +7,7 @@
                 addressI18nCode: '@'
             },
             controller: 'binMapsController',
-            template: ['$templateCache', function (cache) {
-                return cache.get('bin-maps.html');
-            }]
+            templateUrl: 'bin-maps.html'
         });
 
     function BinMapsController(configReader, configWriter, topics) {
