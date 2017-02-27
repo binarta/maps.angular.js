@@ -1,55 +1,49 @@
 (function (angular) {
-    angular.module('bin.maps', ['bin.edit', 'config', 'notifications'])
-        .controller('binMapsController', ['configReader', 'configWriter', 'topicRegistry', BinMapsController])
+    angular.module('bin.maps', ['binarta-applicationjs-angular1', 'bin.edit', 'config', 'notifications'])
         .directive('binMapsMap', ['binMapsProvider', BinMapsMap])
-        .component('binMaps', {
-            bindings: {
-                addressI18nCode: '@'
-            },
-            controller: 'binMapsController',
-            templateUrl: 'bin-maps.html'
-        });
+        .component('binMaps', new BinMaps());
 
-    function BinMapsController(configReader, configWriter, topics) {
-        var ctrl = this, scope = 'public', statusKey = 'maps.status';
-        var statusVisible = 'visible';
-        var statusHidden = 'hidden';
-        var statusDefault = statusVisible;
-
-        function editModeListener(mode) {
-            ctrl.editing = mode;
-        }
-        topics.subscribe('edit.mode', editModeListener);
-
-        configReader({
-            scope: scope,
-            key: statusKey
-        }).then(function (result) {
-            ctrl.status = result.data.value || statusDefault;
-        }, function () {
-            ctrl.status = statusDefault;
-        });
-
-        ctrl.toggle = function () {
-            if (!ctrl.working) {
-                ctrl.working = true;
-                var newStatus = ctrl.status == statusVisible ? statusHidden : statusVisible;
-                
-                configWriter({
-                    scope: scope,
-                    key: statusKey,
-                    value: newStatus
-                }).then(function () {
-                    ctrl.status = newStatus;
-                }).finally(function () {
-                    ctrl.working = false;
-                });
-            }
+    function BinMaps() {
+        this.templateUrl = 'bin-maps.html';
+        this.bindings = {
+            addressI18nCode: '@'
         };
-        
-        ctrl.$onDestroy = function () {
-            topics.unsubscribe('edit.mode', editModeListener);
-        }
+        this.controller = ['configWriter', 'topicRegistry', binComponentController(function (configWriter, topics) {
+            var $ctrl = this, scope = 'public', statusKey = 'maps.status';
+            var statusVisible = 'visible';
+            var statusHidden = 'hidden';
+            var statusDefault = statusVisible;
+
+            function editModeListener(mode) {
+                $ctrl.editing = mode;
+            }
+            topics.subscribe('edit.mode', editModeListener);
+
+            $ctrl.config.public.find(statusKey, function (value) {
+                $ctrl.status = value || statusDefault;
+            });
+
+            $ctrl.toggle = function () {
+                if (!$ctrl.working) {
+                    $ctrl.working = true;
+                    var newStatus = $ctrl.status == statusVisible ? statusHidden : statusVisible;
+
+                    configWriter({
+                        scope: scope,
+                        key: statusKey,
+                        value: newStatus
+                    }).then(function () {
+                        $ctrl.status = newStatus;
+                    }).finally(function () {
+                        $ctrl.working = false;
+                    });
+                }
+            };
+
+            $ctrl.$onDestroy = function () {
+                topics.unsubscribe('edit.mode', editModeListener);
+            };
+        })];
     }
 
     function BinMapsMap(provider) {

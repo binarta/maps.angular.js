@@ -1,10 +1,9 @@
 <div class="bin-maps">
     <bin-edit ng-if="$ctrl.status == 'visible'">
         <bin-edit-actions>
-            <li>
-                <button type="button" class="bin-link" ng-click="$ctrl.toggle()"
-                        i18n code="maps.hide.map" read-only ng-bind="::var"></button>
-            </li>
+            <bin-edit-action action="$ctrl.toggle()">
+                <span i18n code="maps.hide.map" read-only ng-bind="::var"></span>
+            </bin-edit-action>
         </bin-edit-actions>
         <bin-edit-body>
             <div i18n code="{{::$ctrl.addressI18nCode}}">

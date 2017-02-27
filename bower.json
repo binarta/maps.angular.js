@@ -1,14 +1,10 @@
 {
   "name": "binarta.maps.angular",
   "main": [
-    "./src/maps.js",
-    "./src/maps.google.js",
-    "./src/maps-tpls-bootstrap3.js",
-    "./less/maps.less",
-    "./metadata-system.json",
-    "./sources.json"
+    "./src/maps.js"
   ],
   "dependencies": {
+    "binartajs-angular1": "1.*.*",
     "binarta.angularx": "0.*.*",
     "binarta.application.angular": "1.*.*",
     "binarta.edit.angular": "0.*.*",

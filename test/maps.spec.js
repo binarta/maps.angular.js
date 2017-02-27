@@ -2,20 +2,21 @@ angular.module('bin.edit', []);
 beforeEach(module('bin.maps'));
 
 describe('bin.maps', function () {
-    var $rootScope, configReader, configReaderDeferred, configWriter, configWriterDeferred, topics;
+    var $rootScope, configWriter, configWriterDeferred, topics, binarta;
 
-    beforeEach(inject(function($q, _$rootScope_, _configReader_, _configWriter_, topicRegistry) {
+    beforeEach(inject(function($q, _$rootScope_, _configReader_, _configWriter_, topicRegistry, _binarta_) {
         $rootScope = _$rootScope_;
         topics = topicRegistry;
-
-        configReader = _configReader_;
-        configReaderDeferred = $q.defer();
-        configReader.and.returnValue(configReaderDeferred.promise);
+        binarta = _binarta_;
 
         configWriter = _configWriter_;
         configWriterDeferred = $q.defer();
         configWriter.and.returnValue(configWriterDeferred.promise);
     }));
+
+    function triggerBinartaSchedule() {
+        binarta.application.adhesiveReading.read('-');
+    }
 
     describe('binMaps component', function () {
         var component;
@@ -29,31 +30,20 @@ describe('bin.maps', function () {
             expect(component.addressI18nCode).toEqual('contact.address');
         });
 
-        it('maps status is requested', function () {
-            expect(configReader).toHaveBeenCalledWith({
-                scope: 'public',
-                key: statusKey
-            });
-        });
-
         it('default maps status is visible', function () {
-            configReaderDeferred.reject();
-            $rootScope.$digest();
-
+            triggerBinartaSchedule();
             expect(component.status).toEqual('visible');
         });
 
         it('when maps is hidden', function () {
-            configReaderDeferred.resolve({data: {value: 'hidden'}});
-            $rootScope.$digest();
-
+            binarta.application.config.cache('maps.status', 'hidden');
+            triggerBinartaSchedule();
             expect(component.status).toEqual('hidden');
         });
 
         it('when maps is visible', function () {
-            configReaderDeferred.resolve({data: {value: 'visible'}});
-            $rootScope.$digest();
-
+            binarta.application.config.cache('maps.status', 'visible');
+            triggerBinartaSchedule();
             expect(component.status).toEqual('visible');
         });
 
@@ -63,8 +53,8 @@ describe('bin.maps', function () {
 
         describe('hide the map', function () {
             beforeEach(function () {
-                configReaderDeferred.resolve({data: {value: 'visible'}});
-                $rootScope.$digest();
+                binarta.application.config.cache('maps.status', 'visible');
+                triggerBinartaSchedule();
                 component.toggle();
             });
 
@@ -99,8 +89,8 @@ describe('bin.maps', function () {
 
         describe('show the map', function () {
             beforeEach(function () {
-                configReaderDeferred.resolve({data: {value: 'hidden'}});
-                $rootScope.$digest();
+                binarta.application.config.cache('maps.status', 'hidden');
+                triggerBinartaSchedule();
                 component.toggle();
             });
 
@@ -135,9 +125,7 @@ describe('bin.maps', function () {
 
         it('when working, toggle does nothing', function () {
             component.working = true;
-
             component.toggle();
-
             expect(configWriter).not.toHaveBeenCalled();
         });
 
@@ -147,19 +135,14 @@ describe('bin.maps', function () {
 
         it('when editing', function () {
             topics.subscribe.calls.mostRecent().args[1](true);
-
             expect(component.editing).toBeTruthy();
-
             topics.subscribe.calls.mostRecent().args[1](false);
-
             expect(component.editing).toBeFalsy();
         });
 
         it('on destroy', function () {
             var listener = topics.subscribe.calls.mostRecent().args[1];
-
             component.$onDestroy();
-
             expect(topics.unsubscribe.calls.mostRecent().args[0]).toEqual('edit.mode');
             expect(topics.unsubscribe.calls.mostRecent().args[1]).toEqual(listener);
         });
