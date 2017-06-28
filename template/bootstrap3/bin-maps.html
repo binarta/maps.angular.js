@@ -1,8 +1,9 @@
 <div class="bin-maps">
-    <bin-edit ng-if="$ctrl.status == 'visible'">
+    <bin-edit ng-if="$ctrl.status === 'visible'">
         <bin-edit-actions>
-            <bin-edit-action action="$ctrl.toggle()">
-                <span i18n code="maps.hide.map" read-only ng-bind="::var"></span>
+            <bin-edit-action action="$ctrl.toggle()"
+                             icon-class="fa-eye-slash"
+                             i18n-code="maps.hide.map">
             </bin-edit-action>
         </bin-edit-actions>
         <bin-edit-body>
@@ -12,7 +13,7 @@
         </bin-edit-body>
     </bin-edit>
 
-    <div class="bin-maps-hidden" ng-if="$ctrl.status == 'hidden' && $ctrl.editing">
+    <div class="bin-maps-hidden" ng-if="$ctrl.status === 'hidden' && $ctrl.editing">
         <button class="bin-btn bin-btn-primary bin-btn-floated" ng-click="$ctrl.toggle()"
                 i18n code="maps.show.map" read-only ng-bind="::var"></button>
     </div>
