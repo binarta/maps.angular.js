@@ -19,47 +19,48 @@ describe('bin.maps', function () {
     }
 
     describe('binMaps component', function () {
-        var component;
+        var $ctrl;
         var statusKey = 'maps.status';
 
         beforeEach(inject(function($componentController) {
-            component = $componentController('binMaps', null, {addressI18nCode: 'contact.address'});
+            $ctrl = $componentController('binMaps');
+            $ctrl.$onInit();
         }));
 
         it('address i18n code is available', function () {
-            expect(component.addressI18nCode).toEqual('contact.address');
+            expect($ctrl.addressI18nCode).toEqual('contact.address');
         });
 
         it('default maps status is visible', function () {
             triggerBinartaSchedule();
-            expect(component.status).toEqual('visible');
+            expect($ctrl.status).toEqual('visible');
         });
 
         it('when maps is hidden', function () {
             binarta.application.config.cache('maps.status', 'hidden');
             triggerBinartaSchedule();
-            expect(component.status).toEqual('hidden');
+            expect($ctrl.status).toEqual('hidden');
         });
 
         it('when maps is visible', function () {
             binarta.application.config.cache('maps.status', 'visible');
             triggerBinartaSchedule();
-            expect(component.status).toEqual('visible');
+            expect($ctrl.status).toEqual('visible');
         });
 
         it('is not working', function () {
-            expect(component.working).toBeFalsy();
+            expect($ctrl.working).toBeFalsy();
         });
 
         describe('hide the map', function () {
             beforeEach(function () {
                 binarta.application.config.cache('maps.status', 'visible');
                 triggerBinartaSchedule();
-                component.toggle();
+                $ctrl.toggle();
             });
 
             it('is working', function () {
-                expect(component.working).toBeTruthy();
+                expect($ctrl.working).toBeTruthy();
             });
 
             it('persist config value', function () {
@@ -74,16 +75,16 @@ describe('bin.maps', function () {
                 configWriterDeferred.resolve();
                 $rootScope.$digest();
 
-                expect(component.status).toEqual('hidden');
-                expect(component.working).toBeFalsy();
+                expect($ctrl.status).toEqual('hidden');
+                expect($ctrl.working).toBeFalsy();
             });
 
             it('on failed', function () {
                 configWriterDeferred.reject();
                 $rootScope.$digest();
 
-                expect(component.status).toEqual('visible');
-                expect(component.working).toBeFalsy();
+                expect($ctrl.status).toEqual('visible');
+                expect($ctrl.working).toBeFalsy();
             });
         });
 
@@ -91,11 +92,11 @@ describe('bin.maps', function () {
             beforeEach(function () {
                 binarta.application.config.cache('maps.status', 'hidden');
                 triggerBinartaSchedule();
-                component.toggle();
+                $ctrl.toggle();
             });
 
             it('is working', function () {
-                expect(component.working).toBeTruthy();
+                expect($ctrl.working).toBeTruthy();
             });
 
             it('persist config value', function () {
@@ -110,22 +111,22 @@ describe('bin.maps', function () {
                 configWriterDeferred.resolve();
                 $rootScope.$digest();
 
-                expect(component.status).toEqual('visible');
-                expect(component.working).toBeFalsy();
+                expect($ctrl.status).toEqual('visible');
+                expect($ctrl.working).toBeFalsy();
             });
 
             it('on failed', function () {
                 configWriterDeferred.reject();
                 $rootScope.$digest();
 
-                expect(component.status).toEqual('hidden');
-                expect(component.working).toBeFalsy();
+                expect($ctrl.status).toEqual('hidden');
+                expect($ctrl.working).toBeFalsy();
             });
         });
 
         it('when working, toggle does nothing', function () {
-            component.working = true;
-            component.toggle();
+            $ctrl.working = true;
+            $ctrl.toggle();
             expect(configWriter).not.toHaveBeenCalled();
         });
 
@@ -135,14 +136,14 @@ describe('bin.maps', function () {
 
         it('when editing', function () {
             topics.subscribe.calls.mostRecent().args[1](true);
-            expect(component.editing).toBeTruthy();
+            expect($ctrl.editing).toBeTruthy();
             topics.subscribe.calls.mostRecent().args[1](false);
-            expect(component.editing).toBeFalsy();
+            expect($ctrl.editing).toBeFalsy();
         });
 
         it('on destroy', function () {
             var listener = topics.subscribe.calls.mostRecent().args[1];
-            component.$onDestroy();
+            $ctrl.$onDestroy();
             expect(topics.unsubscribe.calls.mostRecent().args[0]).toEqual('edit.mode');
             expect(topics.unsubscribe.calls.mostRecent().args[1]).toEqual(listener);
         });

@@ -14,34 +14,38 @@
             var statusHidden = 'hidden';
             var statusDefault = statusVisible;
 
-            function editModeListener(mode) {
-                $ctrl.editing = mode;
-            }
-            topics.subscribe('edit.mode', editModeListener);
+            $ctrl.$onInit = function () {
+                if (!$ctrl.addressI18nCode) $ctrl.addressI18nCode = 'contact.address';
 
-            $ctrl.config.public.find(statusKey, function (value) {
-                $ctrl.status = value || statusDefault;
-            });
-
-            $ctrl.toggle = function () {
-                if (!$ctrl.working) {
-                    $ctrl.working = true;
-                    var newStatus = $ctrl.status == statusVisible ? statusHidden : statusVisible;
-
-                    configWriter({
-                        scope: scope,
-                        key: statusKey,
-                        value: newStatus
-                    }).then(function () {
-                        $ctrl.status = newStatus;
-                    }).finally(function () {
-                        $ctrl.working = false;
-                    });
+                function editModeListener(mode) {
+                    $ctrl.editing = mode;
                 }
-            };
+                topics.subscribe('edit.mode', editModeListener);
 
-            $ctrl.$onDestroy = function () {
-                topics.unsubscribe('edit.mode', editModeListener);
+                $ctrl.config.public.find(statusKey, function (value) {
+                    $ctrl.status = value || statusDefault;
+                });
+
+                $ctrl.toggle = function () {
+                    if (!$ctrl.working) {
+                        $ctrl.working = true;
+                        var newStatus = $ctrl.status === statusVisible ? statusHidden : statusVisible;
+
+                        configWriter({
+                            scope: scope,
+                            key: statusKey,
+                            value: newStatus
+                        }).then(function () {
+                            $ctrl.status = newStatus;
+                        }).finally(function () {
+                            $ctrl.working = false;
+                        });
+                    }
+                };
+
+                $ctrl.$onDestroy = function () {
+                    topics.unsubscribe('edit.mode', editModeListener);
+                };
             };
         })];
     }
