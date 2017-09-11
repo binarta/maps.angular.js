@@ -2,12 +2,13 @@ angular.module('bin.edit', []);
 beforeEach(module('bin.maps'));
 
 describe('bin.maps', function () {
-    var $rootScope, configWriter, configWriterDeferred, topics, binarta;
+    var $rootScope, configWriter, configWriterDeferred, topics, binarta, i18n;
 
-    beforeEach(inject(function($q, _$rootScope_, _configReader_, _configWriter_, topicRegistry, _binarta_) {
+    beforeEach(inject(function($q, _$rootScope_, _configReader_, _configWriter_, topicRegistry, _binarta_, _i18n_) {
         $rootScope = _$rootScope_;
         topics = topicRegistry;
         binarta = _binarta_;
+        i18n = _i18n_;
 
         configWriter = _configWriter_;
         configWriterDeferred = $q.defer();
@@ -18,6 +19,36 @@ describe('bin.maps', function () {
         binarta.application.adhesiveReading.read('-');
     }
 
+    describe('binMaps service', function () {
+        var sut;
+
+        beforeEach(inject(function (binMaps) {
+            sut = binMaps;
+        }));
+
+        describe('on observeMapLocation', function () {
+            var spy, returnValue;
+
+            beforeEach(function () {
+                spy = jasmine.createSpy('spy');
+                returnValue = sut.observeMapLocation(spy);
+            });
+
+            it('contact.address i18n value is observed', function () {
+                expect(i18n.observe).toHaveBeenCalledWith('contact.address', jasmine.any(Function));
+            });
+
+            it('assert map location', function () {
+                i18n.observe.calls.mostRecent().args[1]('loc');
+                expect(spy).toHaveBeenCalledWith('loc');
+            });
+
+            it('returns disconnect function', function () {
+                expect(returnValue).toEqual({disconnect: jasmine.any(Function)});
+            });
+        });
+    });
+
     describe('binMaps component', function () {
         var $ctrl;
         var statusKey = 'maps.status';
@@ -26,10 +57,6 @@ describe('bin.maps', function () {
             $ctrl = $componentController('binMaps');
             $ctrl.$onInit();
         }));
-
-        it('address i18n code is available', function () {
-            expect($ctrl.addressI18nCode).toEqual('contact.address');
-        });
 
         it('default maps status is visible', function () {
             triggerBinartaSchedule();

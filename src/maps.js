@@ -1,13 +1,18 @@
 (function (angular) {
-    angular.module('bin.maps', ['binarta-applicationjs-angular1', 'bin.edit', 'config', 'notifications'])
-        .directive('binMapsMap', ['binMapsProvider', BinMapsMap])
+    angular.module('bin.maps', ['binarta-applicationjs-angular1', 'bin.edit', 'config', 'notifications', 'i18n'])
+        .service('binMaps', ['i18n', BinMapsService])
         .component('binMaps', new BinMaps());
+
+    function BinMapsService(i18n) {
+        this.observeMapLocation = function (cb) {
+            return i18n.observe('contact.address', function (t) {
+                cb(t);
+            });
+        };
+    }
 
     function BinMaps() {
         this.templateUrl = 'bin-maps.html';
-        this.bindings = {
-            addressI18nCode: '@'
-        };
         this.controller = ['configWriter', 'topicRegistry', binComponentController(function (configWriter, topics) {
             var $ctrl = this, scope = 'public', statusKey = 'maps.status';
             var statusVisible = 'visible';
@@ -15,8 +20,6 @@
             var statusDefault = statusVisible;
 
             $ctrl.$onInit = function () {
-                if (!$ctrl.addressI18nCode) $ctrl.addressI18nCode = 'contact.address';
-
                 function editModeListener(mode) {
                     $ctrl.editing = mode;
                 }
@@ -48,19 +51,5 @@
                 };
             };
         })];
-    }
-
-    function BinMapsMap(provider) {
-        return {
-            restrict: 'E',
-            scope: {
-                address: '<'
-            },
-            link: function (scope, el) {
-                scope.$onChanges = function () {
-                    if (scope.address) provider({address: scope.address, element: el[0]});
-                };
-            }
-        }
     }
 })(angular);

@@ -1,0 +1,21 @@
+<html>
+<head>
+    <style>
+        body {margin: 0; padding: 0;}
+        #map {display:block; width:100%; height:100%; border:none;}
+    </style>
+</head>
+<body>
+<iframe id="map" frameborder="0" allowfullscreen></iframe>
+<script>
+    function s(p) {return new RegExp('[?&]' + p + '=([^&#]*)', 'i');}
+    var h = window.location.href;
+    var a = s('q').exec(h);
+    var z = s('zoom').exec(h);
+    a = a ? a[1] : 'de%20Websters';
+    z = z ? z[1] : 17;
+    var k = 'AIzaSyCa02K7BDa306sAvOuYbAKygu0MZnq56rI';
+    document.getElementById('map').src = 'https://www.google.com/maps/embed/v1/place?q=' + a + '&zoom=' + z + '&key=' + k;
+</script>
+</body>
+</html>
