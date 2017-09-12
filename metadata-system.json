@@ -2,19 +2,47 @@
   "msgs":{
     "nl":{
       "maps.hide.map": "Verberg kaart",
-      "maps.show.map": "Toon kaart"
+      "maps.show.map": "Toon kaart",
+      "maps.update.location": "Update locatie",
+      "maps.address.required": "Het adres is verplicht",
+      "maps.address.update.failed": "Het adres kon niet opgeslagen worden",
+      "maps.location.update.failed": "De pin locatie kon niet opgeslagen worden",
+      "maps.address.label": "Adres",
+      "maps.marker.location.label": "Pin locatie",
+      "maps.marker.location.input.placeholder": "Gebasseerd op jouw adres"
     },
     "en":{
       "maps.hide.map": "Hide map",
-      "maps.show.map": "Show map"
+      "maps.show.map": "Show map",
+      "maps.update.location": "Update location",
+      "maps.address.required": "Address is required",
+      "maps.address.update.failed": "The address could not be saved",
+      "maps.location.update.failed": "The marker location could not be saved",
+      "maps.address.label": "Address",
+      "maps.marker.location.label": "Marker location",
+      "maps.marker.location.input.placeholder": "Based on your address"
     },
     "fr":{
       "maps.hide.map": "Masquer la carte",
-      "maps.show.map": "Voir la carte"
+      "maps.show.map": "Voir la carte",
+      "maps.update.location": "Mettre à jour l'emplacement",
+      "maps.address.required": "L'adresse est obligatoire",
+      "maps.address.update.failed": "L'adresse n'a pas pu être enregistrée",
+      "maps.location.update.failed": "L'emplacement du marqueur n'a pas pu être enregistré",
+      "maps.address.label": "Adresse",
+      "maps.marker.location.label": "Localisation du marqueur",
+      "maps.marker.location.input.placeholder": "Basé sur votre adresse"
     },
     "de":{
       "maps.hide.map": "Hide map",
-      "maps.show.map": "Show map"
+      "maps.show.map": "Show map",
+      "maps.update.location": "Update location",
+      "maps.address.required": "Address is required",
+      "maps.address.update.failed": "The address could not be saved",
+      "maps.location.update.failed": "The marker location could not be saved",
+      "maps.address.label": "Address",
+      "maps.marker.location.label": "Marker location",
+      "maps.marker.location.input.placeholder": "Based on your address"
     }
   }
 }

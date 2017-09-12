@@ -20,10 +20,11 @@ describe('bin.maps', function () {
     }
 
     describe('binMaps service', function () {
-        var sut;
+        var sut, editModeRenderer;
 
-        beforeEach(inject(function (binMaps) {
+        beforeEach(inject(function (binMaps, _editModeRenderer_) {
             sut = binMaps;
+            editModeRenderer = _editModeRenderer_;
         }));
 
         describe('on observeMapLocation', function () {
@@ -39,12 +40,166 @@ describe('bin.maps', function () {
             });
 
             it('assert map location', function () {
-                i18n.observe.calls.mostRecent().args[1]('loc');
-                expect(spy).toHaveBeenCalledWith('loc');
+                i18n.observe.calls.mostRecent().args[1]('address');
+                expect(spy).toHaveBeenCalledWith('address');
             });
 
             it('returns disconnect function', function () {
                 expect(returnValue).toEqual({disconnect: jasmine.any(Function)});
+            });
+
+            describe('when marker location is stored in config', function () {
+                beforeEach(function () {
+                    binarta.application.config.cache('maps.marker.location', 'location');
+                    triggerBinartaSchedule();
+                    returnValue = sut.observeMapLocation(spy);
+                });
+
+                it('assert map location', function () {
+                    expect(spy).toHaveBeenCalledWith('location');
+                });
+            });
+        });
+
+        describe('on edit address', function () {
+            var i18nResolveDeferred, i18nTranslateDeferred;
+
+            beforeEach(inject(function ($q) {
+                i18nResolveDeferred = $q.defer();
+                i18n.resolve.and.returnValue(i18nResolveDeferred.promise);
+                i18nTranslateDeferred = $q.defer();
+                i18n.translate.and.returnValue(i18nTranslateDeferred.promise);
+
+                binarta.application.config.cache('maps.marker.location', 'l');
+                triggerBinartaSchedule();
+
+                binarta.application.setLocaleForPresentation('L');
+                binarta.application.refreshEvents();
+
+                sut.updateLocation();
+            }));
+
+            describe('with editMode renderer scope', function () {
+                var scope;
+
+                beforeEach(function () {
+                    scope = editModeRenderer.open.calls.mostRecent().args[0].scope;
+                });
+
+                it('with address', function () {
+                    i18nResolveDeferred.resolve('a');
+                    $rootScope.$digest();
+                    expect(scope.fields.address).toEqual('a');
+                });
+
+                it('with location', function () {
+                    expect(scope.fields.location).toEqual('l');
+                });
+
+                it('the current language is available on the scope', function () {
+                    expect(scope.lang).toEqual('L');
+                });
+
+                describe('on submit with empty address', function () {
+                    beforeEach(function () {
+                        scope.fields.address = '';
+                        scope.submit();
+                    });
+
+                    it('violation is on scope', function () {
+                        expect(scope.violations).toEqual(['address.required']);
+                    });
+
+                    it('renderer is not closed', function () {
+                        expect(editModeRenderer.close).not.toHaveBeenCalled();
+                    });
+
+                    it('is not working', function () {
+                        expect(scope.working).toBeFalsy();
+                    });
+                });
+
+                describe('on submit with valid values', function () {
+                    beforeEach(function () {
+                        scope.fields.address = 'address';
+                        scope.fields.location = 'location';
+                        scope.submit();
+                    });
+
+                    it('is working', function () {
+                        expect(scope.working).toBeTruthy();
+                    });
+
+                    it('address update', function () {
+                        expect(i18n.translate).toHaveBeenCalledWith({
+                            code: 'contact.address',
+                            translation: 'address'
+                        });
+                    });
+
+                    it('location update', function () {
+                        expect(configWriter).toHaveBeenCalledWith({
+                            scope: 'public',
+                            key: 'maps.marker.location',
+                            value: 'location'
+                        });
+                    });
+
+                    describe('on address update failed', function () {
+                        beforeEach(function () {
+                            i18nTranslateDeferred.reject();
+                            $rootScope.$digest();
+                        });
+
+                        it('violation is on scope', function () {
+                            expect(scope.violations).toEqual(['address.update.failed']);
+                        });
+
+                        it('renderer is not closed', function () {
+                            expect(editModeRenderer.close).not.toHaveBeenCalled();
+                        });
+
+                        it('is not working', function () {
+                            expect(scope.working).toBeFalsy();
+                        });
+                    });
+
+                    describe('on location update failed', function () {
+                        beforeEach(function () {
+                            configWriterDeferred.reject();
+                            $rootScope.$digest();
+                        });
+
+                        it('violation is on scope', function () {
+                            expect(scope.violations).toEqual(['location.update.failed']);
+                        });
+
+                        it('renderer is not closed', function () {
+                            expect(editModeRenderer.close).not.toHaveBeenCalled();
+                        });
+
+                        it('is not working', function () {
+                            expect(scope.working).toBeFalsy();
+                        });
+                    });
+
+                    describe('on updates success', function () {
+                        beforeEach(function () {
+                            i18nTranslateDeferred.resolve();
+                            configWriterDeferred.resolve();
+                            $rootScope.$digest();
+                        });
+
+                        it('renderer is closed', function () {
+                            expect(editModeRenderer.close).toHaveBeenCalled();
+                        });
+                    });
+                });
+
+                it('on close', function () {
+                    scope.close();
+                    expect(editModeRenderer.close).toHaveBeenCalled();
+                });
             });
         });
     });
@@ -81,13 +236,8 @@ describe('bin.maps', function () {
 
         describe('hide the map', function () {
             beforeEach(function () {
-                binarta.application.config.cache('maps.status', 'visible');
-                triggerBinartaSchedule();
+                $ctrl.status = 'visible';
                 $ctrl.toggle();
-            });
-
-            it('is working', function () {
-                expect($ctrl.working).toBeTruthy();
             });
 
             it('persist config value', function () {
@@ -97,33 +247,12 @@ describe('bin.maps', function () {
                     value: 'hidden'
                 });
             });
-
-            it('on success', function () {
-                configWriterDeferred.resolve();
-                $rootScope.$digest();
-
-                expect($ctrl.status).toEqual('hidden');
-                expect($ctrl.working).toBeFalsy();
-            });
-
-            it('on failed', function () {
-                configWriterDeferred.reject();
-                $rootScope.$digest();
-
-                expect($ctrl.status).toEqual('visible');
-                expect($ctrl.working).toBeFalsy();
-            });
         });
 
         describe('show the map', function () {
             beforeEach(function () {
-                binarta.application.config.cache('maps.status', 'hidden');
-                triggerBinartaSchedule();
+                $ctrl.status = 'hidden';
                 $ctrl.toggle();
-            });
-
-            it('is working', function () {
-                expect($ctrl.working).toBeTruthy();
             });
 
             it('persist config value', function () {
@@ -133,28 +262,6 @@ describe('bin.maps', function () {
                     value: 'visible'
                 });
             });
-
-            it('on success', function () {
-                configWriterDeferred.resolve();
-                $rootScope.$digest();
-
-                expect($ctrl.status).toEqual('visible');
-                expect($ctrl.working).toBeFalsy();
-            });
-
-            it('on failed', function () {
-                configWriterDeferred.reject();
-                $rootScope.$digest();
-
-                expect($ctrl.status).toEqual('hidden');
-                expect($ctrl.working).toBeFalsy();
-            });
-        });
-
-        it('when working, toggle does nothing', function () {
-            $ctrl.working = true;
-            $ctrl.toggle();
-            expect(configWriter).not.toHaveBeenCalled();
         });
 
         it('listens for edit mode', function () {

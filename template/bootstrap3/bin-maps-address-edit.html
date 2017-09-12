@@ -1,0 +1,36 @@
+<form name="form" ng-submit="submit()">
+    <div class="bin-menu-edit-body">
+        <bin-violations src="violations" fade-after="7000" code-prefix="maps"></bin-violations>
+
+        <div class="form-group">
+            <label for="bin-maps-input-address">
+                <span i18n code="maps.address.label" read-only ng-bind="::var"></span>
+                <small>(<i class="fa fa-globe"></i> <span ng-bind="::lang | toLanguageName"></span>)</small>
+            </label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-home"></i></div>
+                <input type="text" id="bin-maps-input-address" class="form-control" name="address"
+                       ng-model="fields.address" autofocus required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="bin-maps-input-location" i18n code="maps.marker.location.label" read-only ng-bind="::var">
+            </label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-map-marker"></i></div>
+                <input type="text" id="bin-maps-input-location" class="form-control" name="location"
+                       ng-model="fields.location" placeholder="{{::var}}"
+                       i18n code="maps.marker.location.input.placeholder" read-only>
+            </div>
+        </div>
+    </div>
+    <div class="bin-menu-edit-actions">
+        <button type="submit" class="btn btn-primary" i18n code="clerk.menu.save.button" read-only ng-disabled="working">
+            <span ng-show="working"><i class="fa fa-spinner fa-spin fa-fw"></i></span>
+            <span ng-bind="::var"></span>
+        </button>
+        <button type="reset" class="btn btn-default" ng-click="close()"
+                i18n code="clerk.menu.cancel.button" read-only ng-bind="::var" ng-disabled="working"></button>
+    </div>
+</form>
