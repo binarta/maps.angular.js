@@ -9,7 +9,7 @@
       "maps.location.update.failed": "De pin locatie kon niet opgeslagen worden",
       "maps.address.label": "Adres",
       "maps.marker.location.label": "Pin locatie",
-      "maps.marker.location.input.placeholder": "Gebasseerd op jouw adres"
+      "maps.marker.location.input.placeholder": "Gebaseerd op jouw adres"
     },
     "en":{
       "maps.hide.map": "Hide map",
