@@ -1,14 +1,18 @@
 <bin-edit ng-if="$ctrl.status === 'visible'">
-    <bin-edit-actions>
-        <bin-edit-action action="$ctrl.updateLocation()"
-                         icon-class="fa-map-marker"
-                         i18n-code="maps.update.location">
-        </bin-edit-action>
-        <bin-edit-action action="$ctrl.toggle()"
-                         icon-class="fa-eye-slash"
-                         i18n-code="maps.hide.map">
-        </bin-edit-action>
-    </bin-edit-actions>
+    <bin-actions>
+        <bin-action-group>
+            <bin-action bin-action-type="expression"
+                        bin-action-expression="$ctrl.updateLocation()"
+                        bin-action-icon-class="fa-map-marker"
+                        bin-action-i18n-code="maps.update.location">
+            </bin-action>
+            <bin-action bin-action-type="expression"
+                        bin-action-expression="$ctrl.toggle()"
+                        bin-action-icon-class="fa-eye-slash"
+                        bin-action-i18n-code="maps.hide.map">
+            </bin-action>
+        </bin-action-group>
+    </bin-actions>
     <bin-edit-body>
         <bin-maps-provider></bin-maps-provider>
     </bin-edit-body>

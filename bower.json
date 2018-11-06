@@ -6,7 +6,7 @@
   "dependencies": {
     "binartajs-angular1": "1.*.*",
     "binarta.angularx": "0.*.*",
-    "binarta.edit.angular": "0.*.*",
+    "binarta.edit.angular": "^1.0.0",
     "binarta.config.angular": "0.*.*",
     "binarta.notifications.angular": "1.*.*",
     "binarta.style.guide": "0.*.*",
